@@ -1,132 +1,107 @@
-# 🚀 Welcome to Heart Wishper
-## ✨ Technology Stack
+# HeartWhisper
 
-This scaffold provides a robust foundation built with:
+> Repo name on GitHub: **Heart-Wispher** (historical spelling). The product name in the app and docs is **HeartWhisper**.
 
-### 🎯 Core Framework
-- **⚡ Next.js 16** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+A privacy-first, Valentine's-themed emotional connection demo built with Next.js. The UI simulates real-time emotion sensing, romantic prompting, device pairing, and consent controls — all client-side for the demo (no real biometric capture).
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+## Features
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+- Valentine-themed landing hero with animated hearts
+- Emotion detection dashboard (simulated heart rate / ECG + voice charts)
+- Gentle romantic prompt library with category filters
+- Privacy & consent controls (on-device badge, mutual consent, emergency stop)
+- Connection modes: Date Night, Long-Distance, Friendship, Reflection
+- Device pairing simulation (phone + watch)
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
+## Stack
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+| Layer | Choice |
+| --- | --- |
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 4 + shadcn/ui |
+| Charts / motion | Recharts, Framer Motion |
+| ORM | Prisma + SQLite |
+| Package managers | Bun (preferred) or npm |
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+## Prerequisites
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+- Node.js 20+ (or Bun 1.1+)
+- Optional: Caddy if you use the included reverse-proxy config
 
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
+## Quick start
 
 ```bash
-# Install dependencies
+# 1. Clone
+git clone https://github.com/applejuice093/Heart-Wispher.git
+cd Heart-Wispher
+
+# 2. Install (pick one)
 bun install
+# or: npm install
 
-# Start development server
+# 3. Environment
+cp .env.example .env
+
+# 4. Database (creates local SQLite from Prisma schema)
+bun run db:generate
+bun run db:push
+# or: npm run db:generate && npm run db:push
+
+# 5. Develop
 bun run dev
-
-# Build for production
-bun run build
-
-# Start production server
-bun start
+# or: npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+Open [http://localhost:3000](http://localhost:3000).
 
-## 🤖 Powered by Z.ai
+### Production build
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+```bash
+bun run build
+bun start
+# or: npm run build && npm start
+```
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+The `build` script produces a Next.js **standalone** output under `.next/standalone`.
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+## Scripts
 
-## 📁 Project Structure
+| Script | Purpose |
+| --- | --- |
+| `dev` | Next.js dev server on port 3000 |
+| `build` | Production build + copy static/public into standalone |
+| `start` | Run the standalone server (Bun) |
+| `lint` | ESLint |
+| `typecheck` | `tsc --noEmit` |
+| `db:generate` | Generate Prisma client |
+| `db:push` | Push schema to SQLite (no migration files) |
+| `db:migrate` | Prisma migrate (dev) |
+| `db:reset` | Reset DB (destructive) |
+
+## Project structure
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                 # App Router (page, layout, API)
+├── components/ui/       # shadcn/ui primitives
+├── hooks/               # Shared React hooks
+└── lib/                 # Utilities, Prisma client, demo data
+prisma/                  # Prisma schema
+db/                      # Local SQLite (gitignored *.db)
+public/                  # Static assets
 ```
 
-## 🎨 Available Features & Components
+## Environment
 
-This scaffold includes a comprehensive set of modern web development tools:
+See [`.env.example`](./env.example) — primarily `DATABASE_URL` for Prisma SQLite.
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+## Notes
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+- Emotion / heart-rate / voice panels are **simulated** for demo and UX exploration.
+- Many UI dependencies (dnd-kit, next-auth, next-intl, etc.) ship with the scaffold and may not yet be used by the main page.
+- Prefer **not** committing real `.env` files or `*.db` binaries.
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+## License
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Fetch + TanStack Query
-- **State Management**: Simple and scalable with Zustand
-
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
-
-
----
-
-Built with ❤️ for the developer community.
+See [LICENSE](./LICENSE) (MIT).
