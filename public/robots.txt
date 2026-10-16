@@ -1,14 +1,10 @@
+# HeartWhisper — allow major crawlers; adjust if you add private routes later.
+User-agent: *
+Allow: /
+
+# Optional explicit bots (same policy)
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /
