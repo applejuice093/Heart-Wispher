@@ -1,5 +1,5 @@
 {
-  "name": "nextjs_tailwind_shadcn_ts",
+  "name": "heart-whisper",
   "version": "0.2.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,10 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "typecheck": "tsc --noEmit",
+    "db:studio": "prisma studio",
+    "start:node": "NODE_ENV=production node .next/standalone/server.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -90,5 +93,6 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
-  }
+  },
+  "description": "HeartWhisper \u2014 privacy-first emotional connection demo (Next.js). Repo: Heart-Wispher."
 }
