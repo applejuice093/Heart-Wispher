@@ -14,13 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  applicationName: "HeartWhisper",
   title: "HeartWhisper - Bridging Silent Emotions",
   description: "A privacy-first, real-time emotional connection app that gently uncovers and helps express unspoken emotions hiding beneath everyday conversations. Perfect for Valentine's Day.",
   keywords: ["HeartWhisper", "Emotions", "Love", "Valentine's Day", "Connection", "Privacy", "AI", "Relationship"],
   authors: [{ name: "HeartWhisper Team" }],
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💕</text></svg>",
+    icon: "/logo.svg",
+    apple: "/heart-logo.png",
   },
+  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
   openGraph: {
     title: "HeartWhisper - Bridging Silent Emotions",
     description: "A privacy-first emotional connection app for expressing unspoken feelings",
