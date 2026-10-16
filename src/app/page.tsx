@@ -22,31 +22,23 @@ import {
 } from '@/lib/heart-whisper-data'
 
 // Floating Hearts Background Component
-// Render only after mount so Math.random layout does not hydrate-mismatch SSR.
+// Deterministic layout (no Math.random) so SSR and client markup match.
 const FloatingHearts = () => {
-  const [hearts, setHearts] = useState<Array<{
-    id: number
-    left: number
-    delay: number
-    duration: number
-    size: number
-    opacity: number
-  }>>([])
-
-  useEffect(() => {
-    setHearts(
-      Array.from({ length: 20 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        delay: Math.random() * 15,
-        duration: 15 + Math.random() * 10,
-        size: 16 + Math.random() * 24,
-        opacity: 0.2 + Math.random() * 0.4,
-      }))
-    )
-  }, [])
-
-  if (hearts.length === 0) return null
+  const hearts = useMemo(
+    () =>
+      Array.from({ length: 20 }, (_, i) => {
+        const seed = (i + 1) * 17
+        return {
+          id: i,
+          left: (seed * 7) % 100,
+          delay: (seed % 15),
+          duration: 15 + (seed % 10),
+          size: 16 + (seed % 24),
+          opacity: 0.2 + ((seed % 40) / 100),
+        }
+      }),
+    []
+  )
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
