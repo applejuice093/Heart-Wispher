@@ -13,7 +13,8 @@
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
     "db:studio": "prisma studio",
-    "start:node": "NODE_ENV=production node .next/standalone/server.js"
+    "start:node": "NODE_ENV=production node .next/standalone/server.js",
+    "verify:format": "node scripts/verify-format-session-time.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
