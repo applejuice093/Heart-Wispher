@@ -12,16 +12,41 @@ import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 
+import {
+  emotions,
+  romanticPrompts,
+  connectionModes,
+  formatSessionTime,
+  type Emotion,
+  type Prompt,
+} from '@/lib/heart-whisper-data'
+
 // Floating Hearts Background Component
+// Render only after mount so Math.random layout does not hydrate-mismatch SSR.
 const FloatingHearts = () => {
-  const hearts = useMemo(() => Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    left: Math.random() * 100,
-    delay: Math.random() * 15,
-    duration: 15 + Math.random() * 10,
-    size: 16 + Math.random() * 24,
-    opacity: 0.2 + Math.random() * 0.4
-  })), [])
+  const [hearts, setHearts] = useState<Array<{
+    id: number
+    left: number
+    delay: number
+    duration: number
+    size: number
+    opacity: number
+  }>>([])
+
+  useEffect(() => {
+    setHearts(
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 15,
+        duration: 15 + Math.random() * 10,
+        size: 16 + Math.random() * 24,
+        opacity: 0.2 + Math.random() * 0.4,
+      }))
+    )
+  }, [])
+
+  if (hearts.length === 0) return null
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -75,79 +100,6 @@ const generateVoiceData = () => {
     rate: 120 + Math.cos(i * 0.4) * 20 + Math.random() * 10
   }))
 }
-
-// Emotion Types
-interface Emotion {
-  name: string
-  emoji: string
-  color: string
-  description: string
-}
-
-const emotions: Emotion[] = [
-  { name: "Hidden Excitement", emoji: "💕", color: "#FF6B9D", description: "A subtle joy waiting to be shared" },
-  { name: "Unspoken Affection", emoji: "💗", color: "#FF8FB1", description: "Warm feelings beneath the surface" },
-  { name: "Suppressed Anxiety", emoji: "💭", color: "#E8B4B8", description: "Nervous energy seeking release" },
-  { name: "Quiet Vulnerability", emoji: "🌸", color: "#FFA07A", description: "Openness waiting to emerge" },
-  { name: "Tender Longing", emoji: "🌹", color: "#8B2252", description: "A deep yearning in your heart" },
-]
-
-// Prompt Categories
-interface Prompt {
-  text: string
-  category: string
-}
-
-const romanticPrompts: Prompt[] = [
-  { text: "Your heart just skipped—want to tell them what's making it race? 💓", category: "deep" },
-  { text: "I sense something beautiful you're holding back… whisper it now? 😊", category: "playful" },
-  { text: "The air feels heavier… ready to lighten it with what's really on your mind? 🌹", category: "romantic" },
-  { text: "Your pulse suggests excitement… care to share the reason? ✨", category: "deep" },
-  { text: "Words unsaid carry the most weight… shall we lift one together? 💫", category: "romantic" },
-  { text: "I detect a flutter in your heart… is there something sweet you'd like to confess? 💌", category: "playful" },
-  { text: "Silence can be a canvas… what emotion would you paint? 🎨", category: "deep" },
-  { text: "Your heartbeat tells a story… want to read me a chapter? 📖", category: "romantic" },
-]
-
-// Connection Modes
-interface ConnectionMode {
-  id: string
-  name: string
-  emoji: string
-  description: string
-  features: string[]
-}
-
-const connectionModes: ConnectionMode[] = [
-  {
-    id: "date-night",
-    name: "Date Night Mode",
-    emoji: "💑",
-    description: "Syncs during dinners/walks, suggests vulnerability prompts",
-    features: ["Ambient emotion sensing", "Subtle haptic feedback", "Perfect moment detection"]
-  },
-  {
-    id: "long-distance",
-    name: "Long-Distance Mode",
-    emoji: "💫",
-    description: "Shares anonymized 'emotion pulses' across distance",
-    features: ["Synced heartbeats", "Emotion matching", "Virtual presence feel"]
-  },
-  {
-    id: "friendship",
-    name: "Friendship Edition",
-    emoji: "🤝",
-    description: "Supportive, non-romantic prompts",
-    features: ["Empathy boosters", "Support detection", "Care moment suggestions"]
-  },
-  {
-    id: "reflection",
-    name: "Post-Conversation Reflection",
-    emoji: "📝",
-    description: "Private journal of emotions",
-    features: ["Emotion timeline", "Private insights", "Growth tracking"]
-  }
-]
 
 // Main Page Component
 export default function Home() {
@@ -204,17 +156,25 @@ export default function Home() {
   // Show prompts periodically
   useEffect(() => {
     if (!isSessionActive) return
-    
+
+    let hideTimer: ReturnType<typeof setTimeout> | undefined
+
     const interval = setInterval(() => {
-      const filteredPrompts = promptCategory === 'all' 
-        ? romanticPrompts 
-        : romanticPrompts.filter(p => p.category === promptCategory)
-      setCurrentPrompt(filteredPrompts[Math.floor(Math.random() * filteredPrompts.length)])
+      const filtered =
+        promptCategory === 'all'
+          ? romanticPrompts
+          : romanticPrompts.filter((p) => p.category === promptCategory)
+      if (filtered.length === 0) return
+      setCurrentPrompt(filtered[Math.floor(Math.random() * filtered.length)])
       setShowPrompt(true)
-      setTimeout(() => setShowPrompt(false), 5000)
+      if (hideTimer) clearTimeout(hideTimer)
+      hideTimer = setTimeout(() => setShowPrompt(false), 5000)
     }, 8000)
 
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      if (hideTimer) clearTimeout(hideTimer)
+    }
   }, [isSessionActive, promptCategory])
 
   // Pairing simulation
@@ -222,13 +182,6 @@ export default function Home() {
     setIsPaired(false)
     setTimeout(() => setIsPaired(true), 2000)
   }, [])
-
-  // Format time
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
 
   // Filter prompts by category
   const filteredPrompts = useMemo(() => {
@@ -669,7 +622,7 @@ export default function Home() {
                     Ephemeral data countdown
                   </p>
                   <div className="text-2xl font-mono font-bold text-[#FF6B9D]">
-                    {formatTime(sessionTime)}
+                    {formatSessionTime(sessionTime)}
                   </div>
                 </CardContent>
               </Card>
@@ -960,7 +913,7 @@ export default function Home() {
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-[#4A2C40]/70">Session Time:</span>
                     <span className="font-mono text-lg font-bold text-[#FF6B9D]">
-                      {formatTime(sessionTime)}
+                      {formatSessionTime(sessionTime)}
                     </span>
                   </div>
                 </div>
